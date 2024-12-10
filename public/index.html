@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學生資訊管理系統</title>
+    <style>
+        table, th, td {
+            border: gray 2px solid;
+            border-collapse: collapse;
+        }    
+    </style>
+</head>
+
+<body>
+
+    <h1>學生列表</h1>
+
+    <table id="student-list" style="width: 80%">
+        <tr><th>Name</th><th>Age</th><th>Grade</th></the></tr>
+    </table>
+
+    <h2>新增學生</h2>
+
+    <form id="add-student-form">
+        <label for="name">姓名：</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="age">年齡：</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="grade">年級：</label>
+        <input type="text" id="grade" name="grade" required>
+
+        <button type="submit">新增</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 取得學生列表
+            $.get('students', function (students) {
+                const studentList = $('#student-list');
+                students.forEach(function (student) {
+                    studentList.append(`<tr><td>${student.name}</td><td>${student.age}歲</td><td>${student.grade}年級</td></tr>`);
+                });
+            });
+
+            // 新增學生
+            $('#add-student-form').submit(function (event) {
+                event.preventDefault(); //避免跳頁
+
+                const name = $('#name').val();
+                const age = $('#age').val();
+                const grade = $('#grade').val();
+
+                $.post('students', { name, age, grade }, function (newStudent) {
+                    $('#student-list').append(`<tr><td>${newStudent.name}</td><td>${newStudent.age}歲</td><td>${newStudent.grade}年級</td></tr>`);
+                    $('#add-student-form')[0].reset(); /*執行時遇到 error 訊息，最後有自己增加 "[0]" （希望不會影響到成績🥲)*/
+                });
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
